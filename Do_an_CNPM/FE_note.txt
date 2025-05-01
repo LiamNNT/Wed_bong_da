@@ -1,0 +1,81 @@
+1. public/index.html
+Giải thích: Tệp HTML chính, điểm gắn kết cho ứng dụng React.
+
+2. src/index.css
+Giải thích: Tệp CSS chính, nhập các lớp Tailwind CSS và có thể chứa kiểu tùy chỉnh.
+
+3. src/tailwind.config.js
+Giải thích: Cấu hình Tailwind CSS để theo dõi các tệp trong dự án.
+
+4. src/main.jsx
+Giải thích: Điểm vào của ứng dụng, gắn kết App vào DOM.
+
+
+5. src/App.jsx
+Giải thích: Thành phần chính, quản lý định tuyến và trạng thái xác thực (token).
+
+6. src/components/Navbar.jsx
+Giải thích: Thanh điều hướng hiển thị các liên kết dựa trên trạng thái đăng nhập.
+
+7. src/components/Login.jsx
+Giải thích: Biểu mẫu đăng nhập, gửi yêu cầu đến /api/auth/login.
+
+8. src/components/Register.jsx
+Giải thích: Biểu mẫu đăng ký, gửi yêu cầu đến /api/auth/register.
+
+9. src/components/Teams.jsx
+Giải thích: Hiển thị danh sách đội bóng, gọi API /api/teams/.
+
+10. src/components/TeamForm.jsx
+Giải thích: Biểu mẫu để tạo hoặc chỉnh sửa đội bóng, gọi API /api/teams/ (POST hoặc PUT).
+
+11. src/components/Matches.jsx
+Giải thích: Hiển thị danh sách trận đấu, gọi API /api/matches/.
+
+12. src/components/MatchForm.jsx
+Giải thích: Biểu mẫu để tạo hoặc chỉnh sửa trận đấu, gọi API /api/matches/ (POST hoặc PUT).
+
+13. src/components/Players.jsx
+Giải thích: Hiển thị danh sách cầu thủ, gọi API /api/players.
+
+14. src/components/PlayerForm.jsx
+Giải thích: Biểu mẫu để tạo hoặc chỉnh sửa cầu thủ, gọi API /api/players (POST hoặc PUT).
+
+15. src/components/Seasons.jsx
+Giải thích: Hiển thị danh sách mùa giải, gọi API /api/seasons.
+
+16. src/components/SeasonForm.jsx
+Giải thích: Biểu mẫu để tạo hoặc chỉnh sửa mùa giải, gọi API /api/seasons (POST hoặc PUT).
+
+17. src/components/Regulations.jsx
+Giải thích: Hiển thị danh sách quy định, gọi API /api/regulations/.
+
+18. src/components/RegulationForm.jsx
+Giải thích: Biểu mẫu để tạo hoặc chỉnh sửa quy định, gọi API /api/regulations/ (POST hoặc PUT).
+
+19. src/components/Rankings.jsx
+Giải thích: Hiển thị xếp hạng đội bóng, gọi API /api/rankings/{seasonid}.
+
+20. src/components/PlayerRankings.jsx
+Giải thích: Hiển thị xếp hạng cầu thủ, gọi API /api/player_rankings/season/{seasonid}.
+
+21. src/pages/Home.jsx
+Giải thích: Trang chủ với thông điệp chào mừng.
+
+22. src/pages/TeamsPage.jsx
+Giải thích: Trang quản lý đội bóng, tích hợp danh sách và biểu mẫu.
+
+23. src/pages/MatchesPage.jsx
+Giải thích: Trang quản lý trận đấu, tích hợp danh sách và biểu mẫu.
+
+24. src/pages/PlayersPage.jsx
+Giải thích: Trang quản lý cầu thủ, tích hợp danh sách và biểu mẫu.
+
+25. src/pages/SeasonsPage.jsx
+Giải thích: Trang quản lý mùa giải, tích hợp danh sách và biểu mẫu.
+
+26. src/pages/RegulationsPage.jsx
+Giải thích: Trang quản lý quy định, tích hợp danh sách và biểu mẫu.
+
+27. src/pages/RankingsPage.jsx
+Giải thích: Trang hiển thị xếp hạng đội bóng và cầu thủ.
