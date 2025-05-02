@@ -15,7 +15,7 @@ const Navbar = ({ token, setToken }) => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <nav className="bg-black p-4 shadow-md">
+        <nav className="bg-black/85 backdrop-blur-sm p-4 shadow-md">
             <div className="font-heading container mx-auto flex justify-between items-center">
                 <Link to="/" className="text-white text-2xl font-extrabold">
                     Football League

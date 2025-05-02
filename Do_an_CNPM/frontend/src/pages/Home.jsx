@@ -45,7 +45,7 @@ const Home = () => {
                 {/* Overlay mờ */}
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="relative z-10 p-8 rounded-lg text-center animate-fade-in">
-                    <h1 className="text-5xl font-extrabold mb-4 text-white drop-shadow-xl tracking-wide">
+                    <h1 class="text-4xl font-vietnam font-bold text-white drop-shadow-lg tracking-normal antialiased">
                         Chào mừng đến với Football League Management
                     </h1>
                     <p className="text-xl text-white drop-shadow-md font-light">
@@ -55,12 +55,14 @@ const Home = () => {
             </div>
 
             {/* Section trận đấu gần nhất */}
-            <div className="mt-12 w-full max-w-6xl bg-white/95 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
-                <h3 className="bg-gradient-to-r from-blue-600 to-blue-800 text-4xl font-extrabold text-white py-4 px-8 rounded-lg drop-shadow-md mb-6 text-center font-heading hover:brightness-110 transition-all duration-300">
-                    Kết quả trận đấu gần nhất
-                </h3>
+            <div className="mt-12 w-full max-w-6xl bg-white-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
+                <Link to="/matches">
+                    <h3 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">
+                        Kết quả trận đấu gần nhất
+                    </h3>
+                </Link>
                 {pastMatches.length > 0 && latestMatch ? (
-                    <div className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center transition-all duration-300 hover:shadow-lg">
+                    <div className="bg-white shadow-md p-8 flex flex-col items-center transition-all duration-300 hover:shadow-lg">
                         <div className="flex justify-between w-full mb-4">
                             <div className="text-sm text-gray-600 font-medium">
                                 {new Date(latestMatch.date).toLocaleDateString('en-US', {
@@ -117,8 +119,8 @@ const Home = () => {
             </div>
 
             {/* Section bảng xếp hạng */}
-            <div className="mt-12 w-full max-w-6xl bg-white/95 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
-                <h3 className="bg-gradient-to-r from-blue-600 to-blue-800 text-4xl font-extrabold text-white py-4 px-8 rounded-lg drop-shadow-md mb-6 text-center font-heading hover:brightness-110 transition-all duration-300">
+            <div className="mt-12 w-full max-w-6xl bg-white-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
+                <h3 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">
                     {leagueName}
                 </h3>
                 <Rankings seasonId={seasonId} />
