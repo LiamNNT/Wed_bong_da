@@ -67,25 +67,25 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-6 max-w-md mx-auto">
-      <h2 className="text-xl font-bold text-white mb-4">
+    <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto"> {/* Changed bg-gray-800 to bg-white */}
+      <h2 className="text-xl font-bold text-gray-800 mb-4"> {/* Changed text-white to text-gray-800 */}
         {editingMatch ? 'Sửa trận đấu' : 'Thêm trận đấu'}
       </h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300">Season ID</label>
+          <label className="block text-sm font-medium text-gray-700">Season ID</label>
           <input
             type="text"
             value={formData.season_id}
             onChange={(e) => setFormData({ ...formData, season_id: e.target.value })}
             placeholder="Nhập Season ID"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 1 - ID</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 1 - ID</label>
           <input
             type="text"
             value={formData.team1._id}
@@ -93,12 +93,12 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team1: { ...formData.team1, _id: e.target.value } })
             }
             placeholder="Nhập Team 1 ID"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 1 - Tên</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 1 - Tên</label>
           <input
             type="text"
             value={formData.team1.team_name}
@@ -106,12 +106,12 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team1: { ...formData.team1, team_name: e.target.value } })
             }
             placeholder="Tên đội 1 (ví dụ: Arsenal)"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 1 - Logo URL</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 1 - Logo URL</label>
           <input
             type="text"
             value={formData.team1.logo}
@@ -119,11 +119,11 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team1: { ...formData.team1, logo: e.target.value } })
             }
             placeholder="URL logo đội 1"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 2 - ID</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 2 - ID</label>
           <input
             type="text"
             value={formData.team2._id}
@@ -131,12 +131,12 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team2: { ...formData.team2, _id: e.target.value } })
             }
             placeholder="Nhập Team 2 ID"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 2 - Tên</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 2 - Tên</label>
           <input
             type="text"
             value={formData.team2.team_name}
@@ -144,12 +144,12 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team2: { ...formData.team2, team_name: e.target.value } })
             }
             placeholder="Tên đội 2 (ví dụ: Tottenham)"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Đội 2 - Logo URL</label>
+          <label className="block text-sm font-medium text-gray-700">Đội 2 - Logo URL</label>
           <input
             type="text"
             value={formData.team2.logo}
@@ -157,46 +157,46 @@ const MatchForm = ({ editingMatch, setEditingMatch, setShowForm, setMatches, tok
               setFormData({ ...formData, team2: { ...formData.team2, logo: e.target.value } })
             }
             placeholder="URL logo đội 2"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Ngày thi đấu</label>
+          <label className="block text-sm font-medium text-gray-700">Ngày thi đấu</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Sân vận động</label>
+          <label className="block text-sm font-medium text-gray-700">Sân vận động</label>
           <input
             type="text"
             value={formData.stadium}
             onChange={(e) => setFormData({ ...formData, stadium: e.target.value })}
             placeholder="Nhập tên sân vận động"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Tỉ số</label>
+          <label className="block text-sm font-medium text-gray-700">Tỉ số</label>
           <input
             type="text"
             value={formData.score}
             onChange={(e) => setFormData({ ...formData, score: e.target.value })}
             placeholder="Tỉ số (ví dụ: 0-0)"
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300">Trạng thái</label>
+          <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
           <select
             value={formData.status}
             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="FT">FT (Kết thúc)</option>
           </select>

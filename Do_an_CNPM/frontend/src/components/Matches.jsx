@@ -62,10 +62,10 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
   return (
     <div className="space-y-4">
       {sortedLeagues.map((league) => (
-        <div key={league} className="bg-gray-800 rounded-lg shadow-md p-4">
+        <div key={league} className="bg-white rounded-lg shadow-md p-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-300">{league}</span>
-            <span className="text-xs text-gray-500">
+            <span className="text-sm font-semibold text-gray-800 mb-4">{league}</span>
+            <span className="text-xs text-gray-800 mb-4">
               {groupedMatches[league][0]?.date
                 ? new Date(groupedMatches[league][0].date).toLocaleDateString('en-GB', {
                     day: '2-digit',
@@ -85,28 +85,30 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
                 key={match._id}
                 className="flex items-center py-2 border-b border-gray-700 last:border-b-0"
               >
-                <div className="flex items-center space-x-2 w-1/4">
-                  <span className="text-gray-300">{team1.team_name}</span>
+                <div className="w-1/3 flex items-center space-x-2">
                   <img
                     src={team1.logo || 'https://via.placeholder.com/24'}
                     alt={`${team1.team_name} logo`}
                     className="w-6 h-6 object-contain"
                     onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
                   />
+                  <span className="text-gray-800">{team1.team_name}</span>
                 </div>
-                <div className="flex justify-center w-2/4">
-                  <span className="text-lg font-bold text-white">{team1Score}</span>
-                  <span className="text-lg font-bold text-white mx-2">-</span>
-                  <span className="text-lg font-bold text-white">{team2Score}</span>
+                <div className="w-1/3 flex justify-center">
+                  <span className="text-lg font-bold text-gray-600">{team1Score}</span>
+                  <span className="text-lg font-bold text-gray-600 mx-2">-</span>
+                  <span className="text-lg font-bold text-gray-600">{team2Score}</span>
                 </div>
-                <div className="flex items-center justify-end space-x-2 w-1/4">
+                <div className="w-1/3 flex items-center justify-end space-x-2">
+                  <span className="text-gray-800">{team2.team_name}</span>
                   <img
                     src={team2.logo || 'https://via.placeholder.com/24'}
                     alt={`${team2.team_name} logo`}
                     className="w-6 h-6 object-contain"
                     onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
                   />
-                  <span className="text-gray-300">{team2.team_name}</span>
+                </div>
+                <div className="w-1/4 flex items-center justify-end space-x-2 ml-4">
                   <Link
                     to={`/match/${match._id}`}
                     className="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600"

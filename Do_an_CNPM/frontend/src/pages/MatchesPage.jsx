@@ -27,7 +27,7 @@ const MatchesPage = ({ token }) => {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-gray-20 font-sans">
+    <div className="min-h-screen bg-gray-100 font-sans">
       <div className="flex max-w-7xl mx-auto mt-6 space-x-6">
         {/* Sidebar: Football Leagues */}
         <aside className="w-1/5 bg-white rounded-lg shadow-md p-4">
@@ -51,9 +51,6 @@ const MatchesPage = ({ token }) => {
             >
               Thêm trận đấu
             </button>
-          )}
-          {!token && (
-            <p className="text-gray-500 mb-4">Vui lòng đăng nhập để thêm, sửa hoặc xóa trận đấu.</p>
           )}
           {showForm ? (
             <MatchForm
