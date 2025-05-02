@@ -5,69 +5,83 @@ import PlayerForm from './PlayerForm';
 const Players = ({ setEditingPlayer, setShowForm, token }) => {
     const [players, setPlayers] = useState([]);
     const [playerResults, setPlayerResults] = useState({});
+    const [seasons, setSeasons] = useState([]);
+    const [selectedSeason, setSelectedSeason] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
     const API_URL = 'http://localhost:5000';
 
+    // Lấy danh sách mùa giải khi component mount
     useEffect(() => {
+        const fetchSeasons = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/api/seasons`);
+                const seasonsData = response.data.data || [];
+                setSeasons(seasonsData);
+                if (seasonsData.length > 0) {
+                    setSelectedSeason(seasonsData[0]._id); // Chọn mùa đầu tiên làm mặc định
+                }
+            } catch (err) {
+                setError('Không thể tải danh sách mùa giải. Vui lòng thử lại sau.');
+            }
+        };
+
+        fetchSeasons();
+    }, []);
+
+    // Lấy danh sách cầu thủ và kết quả thi đấu khi mùa giải thay đổi
+    useEffect(() => {
+        if (!selectedSeason) return; // Không gọi API nếu chưa có mùa được chọn
+
         const fetchPlayersAndResults = async () => {
+            setLoading(true);
+            setError(''); // Reset lỗi trước khi gọi API
             try {
                 // Lấy danh sách cầu thủ
                 const playersResponse = await axios.get(`${API_URL}/api/players`);
                 const playersData = playersResponse.data.data || [];
                 setPlayers(playersData);
 
-                // Nếu có cầu thủ, lấy dữ liệu player_results cho từng cầu thủ
-                if (playersData.length > 0) {
+                // Lấy kết quả thi đấu theo mùa giải được chọn
+                if (playersData.length > 0 && selectedSeason) {
+                    const dateObj = new Date();
+                    const date = dateObj.toISOString().split('T')[0]; // Ví dụ: "2025-05-01"
+                    console.log('Selected Season ID:', selectedSeason);
+                    const response = await axios.get(`${API_URL}/api/player_results/season/${selectedSeason}`, {
+                        params: { date },
+                    });
+                    const results = Array.isArray(response.data.data) ? response.data.data : [];
+
+                    // Nếu không có kết quả, lưu thông báo lỗi từ backend nhưng vẫn đặt giá trị mặc định
                     const resultsMap = {};
-                    await Promise.all(
-                        playersData.map(async (player) => {
-                            try {
-                                const response = await axios.get(`${API_URL}/api/player_results/player/${player._id}`);
-                                const results = Array.isArray(response.data.data) ? response.data.data : [];
-                                // Tổng hợp dữ liệu từ tất cả các bản ghi
-                                const aggregatedResult = results.reduce(
-                                    (acc, result) => ({
-                                        matchesplayed: acc.matchesplayed + (result.matchesplayed || 0),
-                                        totalGoals: acc.totalGoals + (result.totalGoals || 0),
-                                        assists: acc.assists + (result.assists || 0),
-                                        yellowCards: acc.yellowCards + (result.yellowCards || 0),
-                                        redCards: acc.redCards + (result.redCards || 0),
-                                    }),
-                                    {
-                                        matchesplayed: 0,
-                                        totalGoals: 0,
-                                        assists: 0,
-                                        yellowCards: 0,
-                                        redCards: 0,
-                                    }
-                                );
-                                resultsMap[player._id] = aggregatedResult;
-                            } catch (err) {
-                                // Nếu không tìm thấy kết quả (404) hoặc lỗi khác, đặt giá trị mặc định
-                                resultsMap[player._id] = {
-                                    matchesplayed: 0,
-                                    totalGoals: 0,
-                                    assists: 0,
-                                    yellowCards: 0,
-                                    redCards: 0,
-                                };
-                            }
-                        })
-                    );
+                    playersData.forEach((player) => {
+                        const playerResult = results.find((result) => result.player_id === player._id);
+                        resultsMap[player._id] = playerResult || {
+                            matchesplayed: 0,
+                            totalGoals: 0,
+                            assists: 0,
+                            yellowCards: 0,
+                            redCards: 0,
+                        };
+                    });
                     setPlayerResults(resultsMap);
+
+                    // Nếu không có kết quả, lưu thông báo lỗi từ backend
+                    if (results.length === 0) {
+                        setError(response.data.message || 'Không có kết quả cầu thủ nào cho mùa giải và ngày này.');
+                    }
                 }
             } catch (err) {
-                setError('Không thể tải danh sách cầu thủ. Vui lòng kiểm tra kết nối hoặc dữ liệu backend.');
+                setError(err.response?.data?.message || 'Không thể tải danh sách cầu thủ hoặc kết quả thi đấu. Vui lòng kiểm tra kết nối hoặc dữ liệu backend.');
             } finally {
-                setLoading(false); // Đảm bảo luôn thoát trạng thái loading
+                setLoading(false);
             }
         };
 
         fetchPlayersAndResults();
-    }, []);
+    }, [selectedSeason]);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -101,13 +115,47 @@ const Players = ({ setEditingPlayer, setShowForm, token }) => {
         }
     };
 
+    // Không chặn render nếu có error
     if (loading) return <p className="text-center">Đang tải...</p>;
-    if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
         <div className="container mx-auto p-4">
             {success && <p className="text-green-500 text-center mb-4">{success}</p>}
             <h2 className="text-2xl font-bold mb-4">Danh sách cầu thủ</h2>
+
+            {/* Dropdown chọn mùa giải */}
+            <div className="mb-4">
+                <label htmlFor="season-select" className="mr-2">Chọn mùa giải: </label>
+                <select
+                    id="season-select"
+                    value={selectedSeason}
+                    onChange={(e) => setSelectedSeason(e.target.value)}
+                    className="border rounded p-2"
+                    disabled={seasons.length === 0} // Vô hiệu hóa nếu không có mùa giải
+                >
+                    {seasons.length === 0 ? (
+                        <option value="">Không có mùa giải</option>
+                    ) : (
+                        seasons.map((season) => (
+                            <option key={season._id} value={season._id}>
+                                {season.season_name} ({formatDate(season.start_date)} - {formatDate(season.end_date)})
+                            </option>
+                        ))
+                    )}
+                </select>
+                {selectedSeason && seasons.length > 0 && (
+                    <p className="text-gray-600 mt-2">
+                        Season ID: <span className="font-semibold">{selectedSeason}</span>
+                    </p>
+                )}
+                {seasons.length === 0 && (
+                    <p className="text-gray-500 mt-2">Không có mùa giải nào để hiển thị.</p>
+                )}
+            </div>
+
+            {/* Hiển thị thông báo lỗi nếu có */}
+            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
             {players.length === 0 ? (
                 <p className="text-gray-500 text-center">Không có cầu thủ nào.</p>
             ) : (
