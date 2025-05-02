@@ -55,7 +55,7 @@ const Home = () => {
             </div>
 
             {/* Section trận đấu gần nhất */}
-            <div className="mt-12 w-full max-w-6xl bg-white-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
+            <div className="mt-12 w-full max-w-6xl bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
                 <Link to="/matches">
                     <h3 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">
                         Kết quả trận đấu gần nhất
@@ -119,10 +119,12 @@ const Home = () => {
             </div>
 
             {/* Section bảng xếp hạng */}
-            <div className="mt-12 w-full max-w-6xl bg-white-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
-                <h3 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">
-                    {leagueName}
-                </h3>
+            <div className="mt-12 w-full max-w-6xl bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm animate-slide-up">
+                <Link to="/rankings">
+                    <h3 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">
+                        {leagueName}
+                    </h3>
+                </Link>
                 <Rankings seasonId={seasonId} />
             </div>
 
