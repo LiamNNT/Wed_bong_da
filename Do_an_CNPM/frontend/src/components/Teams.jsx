@@ -39,7 +39,7 @@ const Teams = ({ setEditingTeam, setShowForm, token }) => {
     if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="bg-white container mx-auto p-4">
             <h2 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">Danh sách đội bóng</h2>
             {teams.length === 0 ? (
                 <p className="text-gray-500 text-center">Không có đội bóng nào.</p>
