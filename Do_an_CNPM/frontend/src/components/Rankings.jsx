@@ -13,59 +13,23 @@ const Rankings = ({ seasonId, token }) => {
             setLoading(true);
             try {
                 const response = await axios.get(`http://localhost:5000/api/rankings/${seasonId}`);
-                // Kiểm tra cấu trúc dữ liệu từ API
                 if (!response.data.success || !Array.isArray(response.data.data)) {
                     throw new Error('Invalid data format from API');
                 }
                 const data = response.data.data;
-                setRankings(data);
-                // Kiểm tra xem dữ liệu có được populate không
+
+                // Kiểm tra nếu dữ liệu không populate đúng
                 if (data.length > 0 && !data[0].team_result_id?.team_id?.team_name) {
-                    setError('Dữ liệu không được populate. Hiển thị dữ liệu giả.');
-                    setRankings([
-                        {
-                            _id: '67ecbb49dcba31003c8dee6f',
-                            team_result_id: {
-                                _id: '67ecb8c611b87e1d8a074da6',
-                                team_id: {
-                                    _id: '67d15dd8b9412e544d984b81',
-                                    team_name: 'Updated Team A',
-                                    stadium: 'Updated Stadium A',
-                                    coach: 'Updated Coach A',
-                                    logo: 'https://example.com/updated_logo.png',
-                                },
-                                matchesPlayed: 10,
-                                points: 25,
-                            },
-                            season_id: '67ceaf8b444f610224ed67df',
-                            rank: 0,
-                            date: '2025-01-10T00:00:00.000Z',
-                        },
-                    ]);
+                    console.warn('Data is not fully populated. Using partial data with fallback.');
+                    setError('Dữ liệu không được populate đầy đủ. Tên đội bóng không khả dụng.');
                 }
+
+                setRankings(data);
                 setLoading(false);
             } catch (err) {
-                setError('Không thể tải danh sách xếp hạng đội bóng. Hiển thị dữ liệu giả.');
-                setRankings([
-                    {
-                        _id: '67ecbb49dcba31003c8dee6f',
-                        team_result_id: {
-                            _id: '67ecb8c611b87e1d8a074da6',
-                            team_id: {
-                                _id: '67d15dd8b9412e544d984b81',
-                                team_name: 'Updated Team A',
-                                stadium: 'Updated Stadium A',
-                                coach: 'Updated Coach A',
-                                logo: 'https://example.com/updated_logo.png',
-                            },
-                            matchesPlayed: 10,
-                            points: 25,
-                        },
-                        season_id: '67ceaf8b444f610224ed67df',
-                        rank: 0,
-                        date: '2025-01-10T00:00:00.000Z',
-                    },
-                ]);
+                console.error('Fetch error:', err.message);
+                setError('Không thể tải danh sách xếp hạng đội bóng.');
+                setRankings([]);
                 setLoading(false);
             }
         };
@@ -90,10 +54,11 @@ const Rankings = ({ seasonId, token }) => {
     };
 
     if (loading) return <p>Đang tải...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
+    if (error && rankings.length === 0) return <p className="text-red-500">{error}</p>;
 
     return (
         <div className="container mx-auto p-4">
+            {error && <p className="text-yellow-500 mb-4">{error}</p>}
             {rankings.length > 0 ? (
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white border border-gray-200">
@@ -102,6 +67,12 @@ const Rankings = ({ seasonId, token }) => {
                                 <th className="py-2 px-4 border-b text-left">Xếp hạng</th>
                                 <th className="py-2 px-4 border-b text-left">Tên đội</th>
                                 <th className="py-2 px-4 border-b text-left">Số trận</th>
+                                <th className="py-2 px-4 border-b text-left">Thắng</th>
+                                <th className="py-2 px-4 border-b text-left">Hòa</th>
+                                <th className="py-2 px-4 border-b text-left">Thua</th>
+                                <th className="py-2 px-4 border-b text-left">Bàn thắng</th>
+                                <th className="py-2 px-4 border-b text-left">Bàn thua</th>
+                                <th className="py-2 px-4 border-b text-left">Hiệu số</th>
                                 <th className="py-2 px-4 border-b text-left">Điểm</th>
                                 <th className="py-2 px-4 border-b text-left">Ngày</th>
                                 {token && <th className="py-2 px-4 border-b text-left">Hành động</th>}
@@ -110,9 +81,15 @@ const Rankings = ({ seasonId, token }) => {
                         <tbody>
                             {rankings.map((ranking) => (
                                 <tr key={ranking._id} className="hover:bg-gray-50">
-                                    <td className="py-2 px-4 border-b">{ranking.rank}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.team_id?.team_name || 'N/A'}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.matchesPlayed || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.rank || 'N/A'}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.team_id?.team_name || 'Không xác định'}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.matchplayed || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.wins || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.draws || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.losses || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsFor || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsAgainst || 0}</td>
+                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsDifference || 0}</td>
                                     <td className="py-2 px-4 border-b">{ranking.team_result_id?.points || 0}</td>
                                     <td className="py-2 px-4 border-b">{new Date(ranking.date).toLocaleDateString()}</td>
                                     {token && (
