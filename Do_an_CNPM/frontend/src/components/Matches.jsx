@@ -4,59 +4,30 @@ import { Link } from 'react-router-dom';
 
 const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'all', onPastMatchesFetched = () => {}, token }) => {
   const [matches, setMatches] = useState([]);
-  const [seasons, setSeasons] = useState({}); // Lưu thông tin seasons theo season_id
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchMatchesAndSeasons = async () => {
+    const fetchMatches = async () => {
       try {
-        // Bước 1: Lấy danh sách trận đấu
         console.log('Token:', token); // Debug token
         const response = await axios.get('http://localhost:5000/api/matches/', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('Matches API Response:', response.data); // Debug API response
+        console.log('API Response:', response.data); // Debug API response
         const matchesData = response.data.data || response.data || [];
         setMatches(matchesData);
-        onPastMatchesFetched(matchesData); // Callback để truyền matches ra ngoài
-
-        // Bước 2: Lấy danh sách season_id duy nhất
-        const seasonIds = [...new Set(matchesData.map(match => match.season_id).filter(id => id))];
-        console.log('Season IDs:', seasonIds); // Debug season_ids
-
-        // Bước 3: Gọi API để lấy thông tin seasons
-        const seasonPromises = seasonIds.map(async (seasonId) => {
-          try {
-            const seasonResponse = await axios.get(`http://localhost:5000/api/seasons/${seasonId}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            return { id: seasonId, data: seasonResponse.data };
-          } catch (err) {
-            console.error(`Error fetching season ${seasonId}:`, err);
-            return { id: seasonId, data: null };
-          }
-        });
-
-        const seasonResults = await Promise.all(seasonPromises);
-        const seasonsData = seasonResults.reduce((acc, result) => {
-          if (result.data) {
-            acc[result.id] = result.data;
-          }
-          return acc;
-        }, {});
-        console.log('Seasons Data:', seasonsData); // Debug seasons
-        setSeasons(seasonsData);
-
+        console.log('Matches:', matchesData); // Debug matches
         setLoading(false);
+        onPastMatchesFetched(matchesData); // Callback để truyền matches ra ngoài
       } catch (err) {
-        console.error('Fetch Matches Error:', err.response || err.message); // Debug error
+        console.error('Fetch Error:', err.response || err.message); // Debug error
         setError('Không thể tải danh sách trận đấu');
         setLoading(false);
       }
     };
 
-    fetchMatchesAndSeasons();
+    fetchMatches();
   }, [token, onPastMatchesFetched]);
 
   const handleEdit = (match) => {
@@ -78,10 +49,9 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
   if (loading) return <p className="text-gray-300">Đang tải...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  // Nhóm matches theo league (season_name) và ngày bắt đầu
+  // Nhóm matches theo league và ngày bắt đầu
   const groupedMatches = matches.reduce((acc, match) => {
-    const season = seasons[match.season_id];
-    const leagueName = season?.season_name ? season.season_name.match(/^(.+?)(?:\s(\d{4}))?/)[1].trim() : 'Unknown League';
+    const leagueName = match.season_id?.name ? match.season_id.name.match(/^(.+?)(?:\s(\d{4}))?/)[1].trim() : 'Unknown League';
     const dateStr = match.date ? new Date(match.date).toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -117,7 +87,7 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
           </div>
           {Object.keys(groupedMatches[league]).sort().map((date) => (
             <div key={date}>
-              <h4 className="text-lg font-semibold text-gray-700 mt-4 mb-2">{date}</h4>
+              <h4 className="text-lg font-semibold text-gray-700 mt-10 mb-2">{date}</h4>
               {groupedMatches[league][date].map((match, index) => {
                 const [team1Score, team2Score] = match.score ? match.score.split('-') : ['0', '0'];
                 const team1 = match.team1 || { team_name: 'Team A', logo: 'https://via.placeholder.com/24' };
