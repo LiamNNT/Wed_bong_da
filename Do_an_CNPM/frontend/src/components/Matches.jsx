@@ -19,6 +19,7 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
         setMatches(matchesData);
         console.log('Matches:', matchesData); // Debug matches
         setLoading(false);
+        onPastMatchesFetched(matchesData); // Callback để truyền matches ra ngoài
       } catch (err) {
         console.error('Fetch Error:', err.response || err.message); // Debug error
         setError('Không thể tải danh sách trận đấu');
@@ -27,7 +28,7 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
     };
 
     fetchMatches();
-  }, [token]);
+  }, [token, onPastMatchesFetched]);
 
   const handleEdit = (match) => {
     setEditingMatch(match);
@@ -48,93 +49,111 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
   if (loading) return <p className="text-gray-300">Đang tải...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
+  // Nhóm matches theo league và ngày bắt đầu
   const groupedMatches = matches.reduce((acc, match) => {
-    const league = match.season_id?.name || 'Unknown League'; // Adjust if season_id has a different field
-    if (!acc[league]) acc[league] = [];
-    acc[league].push(match);
+    const leagueName = match.season_id?.name ? match.season_id.name.match(/^(.+?)(?:\s(\d{4}))?/)[1].trim() : 'Unknown League';
+    const dateStr = match.date ? new Date(match.date).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }) : 'No Date';
+
+    if (!acc[leagueName]) {
+      acc[leagueName] = {};
+    }
+    if (!acc[leagueName][dateStr]) {
+      acc[leagueName][dateStr] = [];
+    }
+    acc[leagueName][dateStr].push(match);
     return acc;
   }, {});
-  
-  console.log('Grouped Matches:', groupedMatches); // Debug grouped matches
 
   const sortedLeagues = Object.keys(groupedMatches).sort();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {sortedLeagues.map((league) => (
-        <div key={league} className="bg-white rounded-lg shadow-md p-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-800 mb-4">{league}</span>
-            <span className="text-xs text-gray-800 mb-4">
-              {groupedMatches[league][0]?.date
-                ? new Date(groupedMatches[league][0].date).toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                : 'N/A'}
-            </span>
+        <div
+          key={league}
+          className="bg-white shadow-md p-4 rounded-lg"
+        >
+          <div className="flex justify-between items-center mb-4 border-b-2 border-gray-200 pb-2">
+            <h3 className="text-xl font-bold text-gray-800">{league}</h3>
+            {Object.keys(groupedMatches[league]).length > 0 && (
+              <h4 className="text-lg font-semibold text-gray-600">
+                {Object.keys(groupedMatches[league])[0]} {/* Lấy ngày đầu tiên làm đại diện */}
+              </h4>
+            )}
           </div>
-          {groupedMatches[league].map((match) => {
-            const [team1Score, team2Score] = match.score ? match.score.split('-') : ['0', '0'];
-            const team1 = match.team1 || { team_name: 'Team A', logo: 'https://via.placeholder.com/24' };
-            const team2 = match.team2 || { team_name: 'Team B', logo: 'https://via.placeholder.com/24' };
+          {Object.keys(groupedMatches[league]).sort().map((date) => (
+            <div key={date}>
+              <h4 className="text-lg font-semibold text-gray-700 mt-10 mb-2">{date}</h4>
+              {groupedMatches[league][date].map((match, index) => {
+                const [team1Score, team2Score] = match.score ? match.score.split('-') : ['0', '0'];
+                const team1 = match.team1 || { team_name: 'Team A', logo: 'https://via.placeholder.com/24' };
+                const team2 = match.team2 || { team_name: 'Team B', logo: 'https://via.placeholder.com/24' };
 
-            return (
-              <div
-                key={match._id}
-                className="flex items-center py-2 border-b border-gray-700 last:border-b-0"
-              >
-                <div className="w-1/3 flex items-center space-x-2">
-                  <img
-                    src={team1.logo || 'https://via.placeholder.com/24'}
-                    alt={`${team1.team_name} logo`}
-                    className="w-6 h-6 object-contain"
-                    onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
-                  />
-                  <span className="text-gray-800">{team1.team_name}</span>
-                </div>
-                <div className="w-1/3 flex justify-center">
-                  <span className="text-lg font-bold text-gray-600">{team1Score}</span>
-                  <span className="text-lg font-bold text-gray-600 mx-2">-</span>
-                  <span className="text-lg font-bold text-gray-600">{team2Score}</span>
-                </div>
-                <div className="w-1/3 flex items-center justify-end space-x-2">
-                  <span className="text-gray-800">{team2.team_name}</span>
-                  <img
-                    src={team2.logo || 'https://via.placeholder.com/24'}
-                    alt={`${team2.team_name} logo`}
-                    className="w-6 h-6 object-contain"
-                    onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
-                  />
-                </div>
-                <div className="w-1/4 flex items-center justify-end space-x-2 ml-4">
-                  <Link
-                    to={`/match/${match._id}`}
-                    className="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600"
+                return (
+                  <div
+                    key={match._id}
+                    className="flex items-center py-3 px-4"
+                    style={{ borderBottom: index === groupedMatches[league][date].length - 1 ? 'none' : '1px solid #e5e7eb' }}
                   >
-                    Chi tiết
-                  </Link>
-                  {token && (
-                    <>
-                      <button
-                        onClick={() => handleEdit(match)}
-                        className="bg-yellow-500 text-white text-xs px-2 py-1 rounded hover:bg-yellow-600"
+                    <div className="w-1/3 flex items-center space-x-3">
+                      <img
+                        src={team1.logo || 'https://via.placeholder.com/24'}
+                        alt={`${team1.team_name} logo`}
+                        className="w-6 h-6 object-contain"
+                        onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
+                      />
+                      <span className="text-gray-800 font-medium">{team1.team_name}</span>
+                    </div>
+                    <div className="w-1/3 flex justify-center space-x-4">
+                      <span className="text-xl font-bold text-gray-600">{team1Score}</span>
+                      <span className="text-xl font-bold text-gray-600">-</span>
+                      <span className="text-xl font-bold text-gray-600">{team2Score}</span>
+                    </div>
+                    <div className="w-1/3 flex items-center justify-end space-x-3">
+                      <span className="text-gray-800 font-medium">{team2.team_name}</span>
+                      <img
+                        src={team2.logo || 'https://via.placeholder.com/24'}
+                        alt={`${team2.team_name} logo`}
+                        className="w-6 h-6 object-contain"
+                        onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
+                      />
+                    </div>
+                    <div className="w-1/4 flex items-center justify-end space-x-2 ml-4">
+                      <Link
+                        to={`/match/${match._id}`}
+                        className="bg-green-500 text-white text-sm px-3 py-1 rounded hover:bg-green-600 transition-colors"
                       >
-                        Sửa
-                      </button>
-                      <button
-                        onClick={() => handleDelete(match._id)}
-                        className="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
-                      >
-                        Xóa
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                        Chi tiết
+                      </Link>
+                      {token && (
+                        <>
+                          <button
+                            onClick={() => handleEdit(match)}
+                            className="bg-yellow-500 text-white text-sm px-3 py-1 rounded hover:bg-yellow-600 transition-colors"
+                          >
+                            Sửa
+                          </button>
+                          <button
+                            onClick={() => handleDelete(match._id)}
+                            className="bg-red-500 text-white text-sm px-3 py-1 rounded hover:bg-red-600 transition-colors"
+                          >
+                            Xóa
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {Object.keys(groupedMatches[league]).length === 0 && (
+            <p className="text-gray-500 text-center">Không có trận đấu nào trong {league}.</p>
+          )}
         </div>
       ))}
       {sortedLeagues.length === 0 && (
