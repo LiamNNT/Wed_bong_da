@@ -35,49 +35,51 @@ const Seasons = ({ setEditingSeason, setShowForm, token }) => {
         }
     };
 
-    if (loading) return <p>Đang tải...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
+    if (loading) return <p className="text-center text-[#6B7280]">Đang tải...</p>;
+    if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Danh sách mùa giải</h2>
-            <table className="min-w-full bg-white border">
-                <thead>
-                    <tr>
-                        <th className="py-2 px-4 border">Tên mùa giải</th>
-                        <th className="py-2 px-4 border">Ngày bắt đầu</th>
-                        <th className="py-2 px-4 border">Ngày kết thúc</th>
-                        <th className="py-2 px-4 border">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {seasons.map((season) => (
-                        <tr key={season._id}>
-                            <td className="py-2 px-4 border">{season.season_name}</td>
-                            <td className="py-2 px-4 border">{new Date(season.start_date).toLocaleDateString()}</td>
-                            <td className="py-2 px-4 border">{new Date(season.end_date).toLocaleDateString()}</td>
-                            <td className="py-2 px-4 border">
-                                {token && setEditingSeason && setShowForm && (
-                                    <>
-                                        <button
-                                            onClick={() => handleEdit(season)}
-                                            className="bg-yellow-500 text-white p-1 rounded mr-2"
-                                        >
-                                            Sửa
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(season._id)}
-                                            className="bg-red-500 text-white p-1 rounded"
-                                        >
-                                            Xóa
-                                        </button>
-                                    </>
-                                )}
-                            </td>
+        <div className="container mx-auto p-6 bg-[#F9FAFB] min-h-screen">
+            <h2 className="text-3xl font-bold mb-6 text-center text-white bg-[#1E3A8A] py-3 px-6 rounded-lg shadow-md">Danh sách mùa giải</h2>
+            <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table className="min-w-full border border-[#E5E7EB]">
+                    <thead className="bg-[#F9FAFB]">
+                        <tr>
+                            <th className="py-3 px-6 border-b border-[#E5E7EB] text-left text-[#111827] font-semibold">Tên mùa giải</th>
+                            <th className="py-3 px-6 border-b border-[#E5E7EB] text-left text-[#111827] font-semibold">Ngày bắt đầu</th>
+                            <th className="py-3 px-6 border-b border-[#E5E7EB] text-left text-[#111827] font-semibold">Ngày kết thúc</th>
+                            <th className="py-3 px-6 border-b border-[#E5E7EB] text-center text-[#111827] font-semibold">Hành động</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {seasons.map((season) => (
+                            <tr key={season._id} className="hover:bg-[#F3F4F6] transition-colors duration-200">
+                                <td className="py-3 px-6 border-b border-[#E5E7EB] text-[#111827]">{season.season_name}</td>
+                                <td className="py-3 px-6 border-b border-[#E5E7EB] text-[#111827]">{new Date(season.start_date).toLocaleDateString('vi-VN')}</td>
+                                <td className="py-3 px-6 border-b border-[#E5E7EB] text-[#111827]">{new Date(season.end_date).toLocaleDateString('vi-VN')}</td>
+                                <td className="py-3 px-6 border-b border-[#E5E7EB] text-center">
+                                    {token && setEditingSeason && setShowForm && (
+                                        <div className="flex justify-center space-x-2">
+                                            <button
+                                                onClick={() => handleEdit(season)}
+                                                className="bg-[#1E3A8A] text-white px-4 py-1 rounded hover:bg-opacity-90 transition-colors duration-200"
+                                            >
+                                                Sửa
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(season._id)}
+                                                className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors duration-200"
+                                            >
+                                                Xóa
+                                            </button>
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

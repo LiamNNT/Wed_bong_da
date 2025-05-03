@@ -39,7 +39,7 @@ const Home = () => {
             <div
                 className="relative w-full h-[60vh] bg-local bg-center bg-cover bg-no-repeat flex flex-col items-center justify-center"
                 style={{
-                    backgroundImage: 'url(https://i.pinimg.com/736x/e9/28/6a/e9286acb220a9b39367e84683461f558.jpg)',
+                    backgroundImage: 'url(https://cdn.bettingexpert.com/assets/football-banner.webp)',
                 }}
             >
                 {/* Overlay mờ */}

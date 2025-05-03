@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        beige: '#e4d5c7',
+      },
       fontFamily: {
         sans: ['"Be Vietnam Pro"', 'sans-serif'], // hoặc Inter, Roboto,...
         heading: ['"Montserrat"', 'sans-serif'],

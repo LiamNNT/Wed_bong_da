@@ -27,7 +27,7 @@ const TeamsPage = ({ token }) => {
                             Thêm đội bóng
                         </button>
                     ) : (
-                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để thêm, sửa hoặc xóa đội bóng.</p>
+                        <p className="text-gray-500 mb-4"></p>
                     )}
                     <Teams
                         setEditingTeam={setEditingTeam}

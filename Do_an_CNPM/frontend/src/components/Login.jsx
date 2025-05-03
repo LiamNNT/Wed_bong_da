@@ -23,28 +23,41 @@ const Login = ({ setToken }) => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Đăng nhập</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mật khẩu"
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <button type="submit" className="bg-blue-600 text-white p-2 rounded">Đăng nhập</button>
-            </form>
+        <div className="min-h-screen bg-[#F9FAFB] bg-cover bg-center flex items-center justify-center p-4"
+            style={{ backgroundImage: "url('https://cdn.vectorstock.com/i/500p/96/15/soccer-ball-on-grass-football-stadium-vector-22349615.jpg')" }}>
+
+            <div className="bg-white/80 rounded-lg shadow-lg p-8 max-w-md w-full">
+                <h2 className="text-4xl font-heading font-bold mb-6 text-center text-black  py-3 rounded-md">Đăng nhập</h2>
+                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                            className="w-full p-3 border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] text-[#111827] placeholder-[#6B7280]"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Mật khẩu"
+                            className="w-full p-3 border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] text-[#111827] placeholder-[#6B7280]"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-orange-400 text-white p-3 rounded-md hover:bg-opacity-90 transition-colors duration-200"
+                    >
+                        Đăng nhập
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

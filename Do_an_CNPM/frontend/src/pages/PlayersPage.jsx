@@ -15,36 +15,38 @@ const PlayersPage = ({ token }) => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            {success && <p className="text-green-500 text-center mb-4">{success}</p>}
-            {showForm ? (
-                <PlayerForm
-                    editingPlayer={editingPlayer}
-                    setEditingPlayer={setEditingPlayer}
-                    setShowForm={setShowForm}
-                    token={token}
-                    onSuccess={handleSuccess} // Truyền callback để thông báo thành công
-                />
-            ) : (
-                <>
-                    {token ? (
-                        <button
-                            onClick={() => setShowForm(true)}
-                            className="bg-blue-600 text-white p-2 rounded mb-4"
-                        >
-                            Thêm cầu thủ
-                        </button>
-                    ) : (
-                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để thêm, sửa hoặc xóa cầu thủ.</p>
-                    )}
-                    <Players
-                        key={refreshKey} // Sử dụng key để trigger re-render và làm mới dữ liệu
+        <div className="min-h-screen bg-gray-100 font-sans">
+            <div className="container mx-auto p-4">
+                {success && <p className="text-green-500 text-center mb-4">{success}</p>}
+                {showForm ? (
+                    <PlayerForm
+                        editingPlayer={editingPlayer}
                         setEditingPlayer={setEditingPlayer}
                         setShowForm={setShowForm}
                         token={token}
+                        onSuccess={handleSuccess} // Truyền callback để thông báo thành công
                     />
-                </>
-            )}
+                ) : (
+                    <>
+                        {token ? (
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="bg-blue-600 text-white p-2 rounded mb-4"
+                            >
+                                Thêm cầu thủ
+                            </button>
+                        ) : (
+                            <p className="text-gray-500 mb-4"></p>
+                        )}
+                        <Players
+                            key={refreshKey} // Sử dụng key để trigger re-render và làm mới dữ liệu
+                            setEditingPlayer={setEditingPlayer}
+                            setShowForm={setShowForm}
+                            token={token}
+                        />
+                    </>
+                )}
+            </div>
         </div>
     );
 };

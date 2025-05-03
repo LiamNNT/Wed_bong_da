@@ -8,34 +8,36 @@ const RegulationsPage = ({ token }) => {
     const [regulations, setRegulations] = useState([]);
 
     return (
-        <div className="container mx-auto p-4">
-            {showForm ? (
-                <RegulationForm
-                    editingRegulation={editingRegulation}
-                    setEditingRegulation={setEditingRegulation}
-                    setShowForm={setShowForm}
-                    setRegulations={setRegulations}
-                    token={token} // Truyền token để RegulationForm kiểm tra quyền
-                />
-            ) : (
-                <>
-                    {token ? (
-                        <button
-                            onClick={() => setShowForm(true)}
-                            className="bg-blue-600 text-white p-2 rounded mb-4"
-                        >
-                            Thêm quy định
-                        </button>
-                    ) : (
-                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để thêm, sửa hoặc xóa quy định.</p>
-                    )}
-                    <Regulations
+        <div className="min-h-screen bg-gray-100 font-sans">
+            <div className="container mx-auto p-4 bg-white">
+                {showForm ? (
+                    <RegulationForm
+                        editingRegulation={editingRegulation}
                         setEditingRegulation={setEditingRegulation}
                         setShowForm={setShowForm}
-                        token={token} // Truyền token để Regulations kiểm tra quyền
+                        setRegulations={setRegulations}
+                        token={token} // Truyền token để RegulationForm kiểm tra quyền
                     />
-                </>
-            )}
+                ) : (
+                    <>
+                        {token ? (
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="bg-blue-600 text-white p-2 rounded mb-4"
+                            >
+                                Thêm quy định
+                            </button>
+                        ) : (
+                            <p className="text-gray-500 mb-4"></p>
+                        )}
+                        <Regulations
+                            setEditingRegulation={setEditingRegulation}
+                            setShowForm={setShowForm}
+                            token={token} // Truyền token để Regulations kiểm tra quyền
+                        />
+                    </>
+                )}
+            </div>
         </div>
     );
 };

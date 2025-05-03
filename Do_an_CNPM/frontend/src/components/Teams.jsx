@@ -35,53 +35,48 @@ const Teams = ({ setEditingTeam, setShowForm, token }) => {
         }
     };
 
-    if (loading) return <p>Đang tải...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
+    if (loading) return <p className="text-center text-gray-500">Đang tải...</p>;
+    if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Danh sách đội bóng</h2>
+            <h2 className="bg-gradient-to-r from-slate-600 to-slate-800 text-4xl font-extrabold text-white py-3 px-6 rounded-lg drop-shadow-md mb-4 text-center font-heading hover:brightness-110 transition-all duration-200">Danh sách đội bóng</h2>
             {teams.length === 0 ? (
                 <p className="text-gray-500 text-center">Không có đội bóng nào.</p>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border">
-                        <thead>
-                            <tr>
-                                <th className="py-2 px-4 border">Tên đội</th>
-                                <th className="py-2 px-4 border">Sân vận động</th>
-                                <th className="py-2 px-4 border">Huấn luyện viên</th>
-                                <th className="py-2 px-4 border">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {teams.map((team) => (
-                                <tr key={team._id}>
-                                    <td className="py-2 px-4 border">{team.team_name}</td>
-                                    <td className="py-2 px-4 border">{team.stadium}</td>
-                                    <td className="py-2 px-4 border">{team.coach}</td>
-                                    <td className="py-2 px-4 border">
-                                        {token && setEditingTeam && setShowForm && (
-                                            <>
-                                                <button
-                                                    onClick={() => handleEdit(team)}
-                                                    className="bg-yellow-500 text-white p-1 rounded mr-2"
-                                                >
-                                                    Sửa
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(team._id)}
-                                                    className="bg-red-500 text-white p-1 rounded"
-                                                >
-                                                    Xóa
-                                                </button>
-                                            </>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {teams.map((team) => (
+                        <div
+                            key={team._id}
+                            className="bg-white border rounded-lg shadow-md p-4 flex flex-col items-center transform transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+                        >
+                            <img
+                                src={team.logo}
+                                alt={`${team.team_name} logo`}
+                                className="w-24 h-24 object-contain mb-4"
+                                onError={(e) => (e.target.src = 'https://th.bing.com/th/id/OIP.dSoxOf16Bt30Ntp4xXxg6gAAAA?rs=1&pid=ImgDetMain')}
+                            />
+                            <h3 className="text-lg font-semibold text-center">{team.team_name}</h3>
+                            <p className="text-gray-600 text-center">Sân: {team.stadium}</p>
+                            <p className="text-gray-600 text-center">HLV: {team.coach}</p>
+                            {token && setEditingTeam && setShowForm && (
+                                <div className="mt-4 flex space-x-2">
+                                    <button
+                                        onClick={() => handleEdit(team)}
+                                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                                    >
+                                        Sửa
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(team._id)}
+                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                    >
+                                        Xóa
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

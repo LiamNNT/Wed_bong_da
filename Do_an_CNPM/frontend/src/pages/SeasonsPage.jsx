@@ -27,7 +27,7 @@ const SeasonsPage = ({ token }) => {
                             Thêm mùa giải
                         </button>
                     ) : (
-                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để thêm, sửa hoặc xóa mùa giải.</p>
+                        <p className="text-gray-500 mb-4"></p>
                     )}
                     <Seasons
                         setEditingSeason={setEditingSeason}
