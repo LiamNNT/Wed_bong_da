@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'all', onPastMatchesFetched = () => {}, token }) => {
+const Matches = ({ setEditingMatch = () => { }, setShowForm = () => { }, type = 'all', onPastMatchesFetched = () => { }, token }) => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -16,10 +16,16 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
         });
         console.log('API Response:', response.data); // Debug API response
         const matchesData = response.data.data || response.data || [];
-        setMatches(matchesData);
-        console.log('Matches:', matchesData); // Debug matches
+        // Ensure each match has valid team1 and team2 objects
+        const validatedMatches = matchesData.map(match => ({
+          ...match,
+          team1: match.team1 || { team_name: 'Team A', logo: 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain' },
+          team2: match.team2 || { team_name: 'Team B', logo: 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain' },
+        }));
+        setMatches(validatedMatches);
+        console.log('Matches:', validatedMatches); // Debug matches
         setLoading(false);
-        onPastMatchesFetched(matchesData); // Callback để truyền matches ra ngoài
+        onPastMatchesFetched(validatedMatches); // Callback để truyền matches ra ngoài
       } catch (err) {
         console.error('Fetch Error:', err.response || err.message); // Debug error
         setError('Không thể tải danh sách trận đấu');
@@ -90,8 +96,8 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
               <h4 className="text-lg font-semibold text-gray-700 mt-10 mb-2">{date}</h4>
               {groupedMatches[league][date].map((match, index) => {
                 const [team1Score, team2Score] = match.score ? match.score.split('-') : ['0', '0'];
-                const team1 = match.team1 || { team_name: 'Team A', logo: 'https://via.placeholder.com/24' };
-                const team2 = match.team2 || { team_name: 'Team B', logo: 'https://via.placeholder.com/24' };
+                const team1 = match.team1 || { team_name: 'Team A', logo: 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain' };
+                const team2 = match.team2 || { team_name: 'Team B', logo: 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain' };
 
                 return (
                   <div
@@ -101,10 +107,10 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
                   >
                     <div className="w-1/3 flex items-center space-x-3">
                       <img
-                        src={team1.logo || 'https://via.placeholder.com/24'}
+                        src={team1.logo || 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain'}
                         alt={`${team1.team_name} logo`}
                         className="w-6 h-6 object-contain"
-                        onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
+                        onError={(e) => (e.target.src = 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain')}
                       />
                       <span className="text-gray-800 font-medium">{team1.team_name}</span>
                     </div>
@@ -116,10 +122,10 @@ const Matches = ({ setEditingMatch = () => {}, setShowForm = () => {}, type = 'a
                     <div className="w-1/3 flex items-center justify-end space-x-3">
                       <span className="text-gray-800 font-medium">{team2.team_name}</span>
                       <img
-                        src={team2.logo || 'https://via.placeholder.com/24'}
+                        src={team2.logo || 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain'}
                         alt={`${team2.team_name} logo`}
                         className="w-6 h-6 object-contain"
-                        onError={(e) => (e.target.src = 'https://via.placeholder.com/24')}
+                        onError={(e) => (e.target.src = 'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain')}
                       />
                     </div>
                     <div className="w-1/4 flex items-center justify-end space-x-2 ml-4">

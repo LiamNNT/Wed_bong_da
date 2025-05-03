@@ -45,7 +45,7 @@ const Home = () => {
                 {/* Overlay mờ */}
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="relative z-10 p-8 rounded-lg text-center animate-fade-in">
-                    <h1 class="text-4xl font-vietnam font-bold text-white drop-shadow-lg tracking-normal antialiased">
+                    <h1 className="text-4xl font-vietnam font-bold text-white drop-shadow-lg tracking-normal antialiased">
                         Chào mừng đến với Football League Management
                     </h1>
                     <p className="text-xl text-white drop-shadow-md font-light">
@@ -78,10 +78,10 @@ const Home = () => {
                         <div className="flex items-center gap-6">
                             <img
                                 src={
-                                    latestMatch.team1.logo ||
+                                    latestMatch.team1?.logo ||
                                     'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain'
                                 }
-                                alt={`${latestMatch.team1.team_name} logo`}
+                                alt={`${latestMatch.team1?.team_name || 'Team 1'} logo`}
                                 className="w-16 h-16 object-contain rounded-full border-2 border-gray-200 shadow-sm"
                                 onError={(e) =>
                                 (e.target.src =
@@ -93,10 +93,10 @@ const Home = () => {
                             </div>
                             <img
                                 src={
-                                    latestMatch.team2.logo ||
+                                    latestMatch.team2?.logo ||
                                     'https://th.bing.com/th/id/OIP.iiLfIvv8F-PfjMrjObypGgHaHa?rs=1&pid=ImgDetMain'
                                 }
-                                alt={`${latestMatch.team2.team_name} logo`}
+                                alt={`${latestMatch.team2?.team_name || 'Team 2'} logo`}
                                 className="w-16 h-16 object-contain rounded-full border-2 border-gray-200 shadow-sm"
                                 onError={(e) =>
                                 (e.target.src =
@@ -106,10 +106,10 @@ const Home = () => {
                         </div>
                         <div className="flex justify-between w-full mt-4">
                             <div className="text-base text-gray-800 font-semibold text-left">
-                                {latestMatch.team1.team_name}
+                                {latestMatch.team1?.team_name || 'Team 1'}
                             </div>
                             <div className="text-base text-gray-800 font-semibold text-right">
-                                {latestMatch.team2.team_name}
+                                {latestMatch.team2?.team_name || 'Team 2'}
                             </div>
                         </div>
                     </div>
