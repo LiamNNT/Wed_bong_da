@@ -8,13 +8,12 @@ import { Navigation, Pagination } from 'swiper/modules';
 
 const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingMatch = () => { }, setShowForm = () => { }, type = 'all', onPastMatchesFetched = () => { }, token, seasonId, limit }) => {
   const [localMatches, setLocalMatches] = useState([]);
+  const [seasons, setSeasons] = useState([]);
+  const [selectedSeasonId, setSelectedSeasonId] = useState(seasonId || '');
+  const [selectedDate, setSelectedDate] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [dateError, setDateError] = useState(''); // State for date validation error
 
-  // Use propMatches if provided, otherwise use localMatches
   const matches = propMatches !== undefined ? propMatches : localMatches;
   const setMatches = setPropMatches || setLocalMatches;
 
@@ -24,12 +23,37 @@ const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingM
     e.target.src = defaultLogoUrl;
   };
 
+  // Fetch seasons
+  useEffect(() => {
+    const fetchSeasons = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/seasons');
+        setSeasons(response.data.data || response.data || []);
+      } catch (err) {
+        console.error('Fetch Seasons Error:', err);
+        setError('Không thể tải danh sách mùa giải');
+      }
+    };
+    fetchSeasons();
+  }, []);
+
+  // Set selectedSeasonId from prop
+  useEffect(() => {
+    if (seasonId) {
+      setSelectedSeasonId(seasonId);
+    }
+  }, [seasonId]);
+
+  // Fetch matches
   useEffect(() => {
     const fetchMatches = async () => {
       try {
         let url = 'http://localhost:5000/api/matches/';
-        if (seasonId) {
-          url = `http://localhost:5000/api/matches/seasons/${seasonId}`;
+        if (selectedSeasonId) {
+          url = `http://localhost:5000/api/matches/seasons/${selectedSeasonId}`;
+          if (type === 'all' && selectedDate) {
+            url += `/${selectedDate}`;
+          }
         }
         const response = await axios.get(url);
         const matchesData = response.data.data || response.data || [];
@@ -46,13 +70,13 @@ const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingM
         setLoading(false);
       } catch (err) {
         console.error('Fetch Matches Error:', err.response?.data || err.message);
-        setError('Không thể tải danh sách trận đấu');
+        setError(err.response?.status === 404 ? 'Mùa giải hoặc ngày không hợp lệ' : 'Không thể tải danh sách trận đấu');
         setLoading(false);
       }
     };
 
     fetchMatches();
-  }, [seasonId, onPastMatchesFetched, setMatches]);
+  }, [selectedSeasonId, selectedDate, type, onPastMatchesFetched, setMatches]);
 
   const handleEdit = (match) => {
     setEditingMatch(match);
@@ -74,64 +98,26 @@ const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingM
     }
   };
 
-  // Validate date range when startDate or endDate changes
-  const validateDateRange = (start, end) => {
-    if (start && end && new Date(end) < new Date(start)) {
-      setDateError('Ngày kết thúc không thể trước ngày bắt đầu.');
-      return false;
-    }
-    setDateError('');
-    return true;
+  const handleDateChange = (value) => {
+    setSelectedDate(value);
   };
 
-  // Handle startDate change
-  const handleStartDateChange = (value) => {
-    setStartDate(value);
-    if (value && endDate) {
-      validateDateRange(value, endDate);
-    }
-  };
-
-  // Handle endDate change
-  const handleEndDateChange = (value) => {
-    setEndDate(value);
-    if (startDate && value) {
-      validateDateRange(startDate, value);
-    }
-  };
-
-  // Handle reset filter
   const handleResetFilter = () => {
-    setStartDate('');
-    setEndDate('');
-    setDateError('');
-  };
-
-  // Filter matches based on the date range, only for type="all"
-  const filterMatchesByDate = (matchesList) => {
-    if (type !== 'all' || (!startDate && !endDate)) return matchesList;
-    if (dateError) return []; // Return empty list if date range is invalid
-    return matchesList.filter((match) => {
-      const matchDate = new Date(match.date);
-      const start = startDate ? new Date(startDate) : new Date(-8640000000000000); // Min date
-      const end = endDate ? new Date(endDate) : new Date(8640000000000000); // Max date
-      return matchDate >= start && matchDate <= end;
-    });
+    setSelectedDate('');
   };
 
   if (loading) return <p>Đang tải...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   const today = new Date();
-  const filteredMatches = filterMatchesByDate(matches); // Lọc theo dải ngày nếu type="all"
-  const pastMatches = filteredMatches
+  const pastMatches = matches
     .filter((match) => new Date(match.date) <= today && match.score)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  const upcomingMatches = filteredMatches
+  const upcomingMatches = matches
     .filter((match) => new Date(match.date) > today)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, limit || undefined); // Áp dụng limit nếu có
+    .slice(0, limit || undefined);
 
   const renderMatches = (list, title, color) => (
     <div>
@@ -193,7 +179,7 @@ const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingM
         ))
       ) : (
         <p className="text-center text-gray-500">
-          {type === 'all' && dateError ? 'Vui lòng chọn khoảng ngày hợp lệ.' : type === 'all' ? 'Không có trận nào trong khoảng thời gian này.' : 'Không có trận đấu sắp diễn ra.'}
+          {type === 'all' && selectedDate ? 'Không có trận đấu nào trong ngày này.' : type === 'all' ? 'Không có trận đấu nào.' : 'Không có trận đấu sắp diễn ra.'}
         </p>
       )}
     </div>
@@ -201,26 +187,35 @@ const Matches = ({ matches: propMatches, setMatches: setPropMatches, setEditingM
 
   return (
     <div className="container mx-auto p-4">
-      {/* Date Range Search Input and Reset Button, chỉ hiển thị khi type="all" */}
+      {/* Season Selection */}
+      <div className="mb-4">
+        <label htmlFor="season-select" className="mr-2">Chọn mùa giải: </label>
+        <select
+          id="season-select"
+          value={selectedSeasonId}
+          onChange={(e) => setSelectedSeasonId(e.target.value)}
+          className="border rounded p-2"
+        >
+          <option value="">Tất cả mùa giải</option>
+          {seasons.map((season) => (
+            <option key={season._id} value={season._id}>
+              {season.season_name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Date Selection */}
       {type === 'all' && (
         <div className="mb-4 flex items-center gap-4">
-          <label htmlFor="start-date" className="mr-2">Từ ngày: </label>
+          <label htmlFor="match-date" className="mr-2">Chọn ngày: </label>
           <input
             type="date"
-            id="start-date"
-            value={startDate}
-            onChange={(e) => handleStartDateChange(e.target.value)}
+            id="match-date"
+            value={selectedDate}
+            onChange={(e) => handleDateChange(e.target.value)}
             className="border rounded p-2"
           />
-          <label htmlFor="end-date" className="mr-2">Đến ngày: </label>
-          <input
-            type="date"
-            id="end-date"
-            value={endDate}
-            onChange={(e) => handleEndDateChange(e.target.value)}
-            className="border rounded p-2"
-          />
-          {dateError && <p className="text-red-500 text-sm ml-2">{dateError}</p>}
           <button
             onClick={handleResetFilter}
             className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
