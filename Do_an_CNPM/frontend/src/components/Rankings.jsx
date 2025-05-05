@@ -6,6 +6,9 @@ const Rankings = ({ seasonId, token }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // Placeholder URL cho logo mặc định (thay bằng URL bạn cung cấp)
+    const defaultLogoUrl = 'https://th.bing.com/th/id/OIP.dSoxOf16Bt30Ntp4xXxg6gAAAA?rs=1&pid=ImgDetMain'; // Thay bằng URL hình ảnh mặc định
+
     useEffect(() => {
         if (!seasonId) return;
 
@@ -53,50 +56,72 @@ const Rankings = ({ seasonId, token }) => {
         }
     };
 
-    if (loading) return <p>Đang tải...</p>;
-    if (error && rankings.length === 0) return <p className="text-red-500">{error}</p>;
+    if (loading) return <p className="text-lg">Đang tải...</p>;
+    if (error && rankings.length === 0) return <p className="text-red-500 text-lg">{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
-            {error && <p className="text-yellow-500 mb-4">{error}</p>}
+        <div className="container mx-auto p-6">
+            {error && <p className="text-yellow-500 text-lg mb-6">{error}</p>}
             {rankings.length > 0 ? (
                 <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border border-gray-200">
+                    <table className="min-w-full max-w-6xl mx-auto border-2 border-gray-300 shadow-lg">
                         <thead>
-                            <tr className="bg-gray-100">
-                                <th className="py-2 px-4 border-b text-left">Xếp hạng</th>
-                                <th className="py-2 px-4 border-b text-left">Tên đội</th>
-                                <th className="py-2 px-4 border-b text-left">Số trận</th>
-                                <th className="py-2 px-4 border-b text-left">Thắng</th>
-                                <th className="py-2 px-4 border-b text-left">Hòa</th>
-                                <th className="py-2 px-4 border-b text-left">Thua</th>
-                                <th className="py-2 px-4 border-b text-left">Bàn thắng</th>
-                                <th className="py-2 px-4 border-b text-left">Bàn thua</th>
-                                <th className="py-2 px-4 border-b text-left">Hiệu số</th>
-                                <th className="py-2 px-4 border-b text-left">Điểm</th>
-                                <th className="py-2 px-4 border-b text-left">Ngày</th>
-                                {token && <th className="py-2 px-4 border-b text-left">Hành động</th>}
+                            <tr className="bg-blue-950 text-white">
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Xếp hạng</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Tên đội</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Số trận</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Thắng</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Hòa</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Thua</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Bàn thắng</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Bàn thua</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Hiệu số</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Điểm</th>
+                                <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Ngày</th>
+                                {token && <th className="py-4 px-8 border-b-2 border-gray-300 text-left text-xl font-bold">Hành động</th>}
                             </tr>
                         </thead>
                         <tbody>
-                            {rankings.map((ranking) => (
-                                <tr key={ranking._id} className="hover:bg-gray-50">
-                                    <td className="py-2 px-4 border-b">{ranking.rank || 'N/A'}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.team_id?.team_name || 'Không xác định'}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.matchplayed || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.wins || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.draws || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.losses || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsFor || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsAgainst || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.goalsDifference || 0}</td>
-                                    <td className="py-2 px-4 border-b">{ranking.team_result_id?.points || 0}</td>
-                                    <td className="py-2 px-4 border-b">{new Date(ranking.date).toLocaleDateString()}</td>
+                            {rankings.map((ranking, index) => (
+                                <tr
+                                    key={ranking._id}
+                                    className={`hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+                                >
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.rank || 'N/A'}</td>
+                                    <td className="w-64 py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">
+                                        <div className="flex items-center space-x-3 min-w-0">
+                                            {ranking.team_result_id?.team_id?.logo ? (
+                                                <img
+                                                    src={ranking.team_result_id.team_id.logo}
+                                                    alt={`${ranking.team_result_id.team_id.team_name} logo`}
+                                                    className="w-10 h-10 rounded-full flex-shrink-0"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={defaultLogoUrl}
+                                                    alt="Default logo"
+                                                    className="w-10 h-10 rounded-full flex-shrink-0"
+                                                />
+                                            )}
+                                            <span className="truncate text-lg text-gray-800" title={ranking.team_result_id?.team_id?.team_name || 'Không xác định'}>
+                                                {ranking.team_result_id?.team_id?.team_name || 'Không xác định'}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.matchplayed || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.wins || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.draws || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.losses || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.goalsFor || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.goalsAgainst || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.goalsDifference || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{ranking.team_result_id?.points || 0}</td>
+                                    <td className="py-4 px-8 border-b-2 border-gray-300 text-lg text-gray-800">{new Date(ranking.date).toLocaleDateString()}</td>
                                     {token && (
-                                        <td className="py-2 px-4 border-b">
+                                        <td className="py-4 px-8 border-b-2 border-gray-300">
                                             <button
                                                 onClick={() => handleDelete(ranking._id)}
-                                                className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                                                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200"
                                             >
                                                 Xóa
                                             </button>
@@ -108,7 +133,7 @@ const Rankings = ({ seasonId, token }) => {
                     </table>
                 </div>
             ) : (
-                <p className="text-gray-500">Chưa có dữ liệu xếp hạng đội bóng.</p>
+                <p className="text-gray-500 text-lg">Chưa có dữ liệu xếp hạng đội bóng.</p>
             )}
         </div>
     );
